@@ -2,7 +2,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { Replacement } from './mail.controller';
+import { MailRequest, Replacement } from './mail.controller';
 
 @Injectable()
 export class MailService {
@@ -38,7 +38,7 @@ export class MailService {
     }
   }
 
-  async sendMail(replacements: Replacement) {
+  async sendMail(replacements: Replacement, input: MailRequest) {
     const emailContent = await this.loadTemplate('mail-recruiter');
 
     let updatedContent = emailContent;
@@ -50,8 +50,9 @@ export class MailService {
 
     await this.mailSendService.sendMail({
       from: 'Jander Nery <jander.webmaster@gmail.com>',
-      to: 'jander.webmaster@gmail.com',
-      subject: `How to Send Emails with Nodemailer`,
+      to: input.to,
+      subject: `Vaga - ${input.vacancy} - Jander da Costa Nery`,
+      cc: 'Jander Nery <jander.webmaster@gmail.com>',
       html: updatedContent,
       attachments: [
         {
