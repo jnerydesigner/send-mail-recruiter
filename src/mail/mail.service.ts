@@ -2,7 +2,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { MailRequest, Replacement } from './mail.controller';
+import { MailRequest, Replacement } from './mail.dto';
 
 @Injectable()
 export class MailService {
@@ -37,9 +37,44 @@ export class MailService {
       console.log(e);
     }
   }
+  saudation() {
+    const now = new Date();
+    const hour = now.getHours();
 
-  async sendMail(replacements: Replacement, input: MailRequest) {
+    let saudation: string;
+
+    if (hour >= 6 && hour < 12) {
+      saudation = 'Bom dia';
+    } else if (hour >= 12 && hour < 18) {
+      saudation = 'Boa tarde';
+    } else {
+      saudation = 'Boa noite';
+    }
+
+    return saudation;
+  }
+
+  async sendMail(input: MailRequest) {
+    const skills = input.skills
+      .trim()
+      .replace(/,$/, '')
+      .replace(/,(\S)/g, ', $1')
+      .trim();
+
+    const replacements: Replacement = [
+      ['user', 'Jander Nery'],
+      ['company', input.company],
+      ['recruiter', input.nameRecruiter],
+      ['vacancy', input.vacancy],
+      ['habilities', skills],
+      ['githubAvatar', input.githubAvatar],
+      ['nameFull', input.nameFull],
+      ['specialty', input.specialty],
+      ['saudation', this.saudation()],
+    ];
+    console.log(replacements);
     const emailContent = await this.loadTemplate('mail-recruiter');
+    console.log(input.skills);
 
     let updatedContent = emailContent;
 
@@ -48,18 +83,34 @@ export class MailService {
       updatedContent = updatedContent.replace(regex, value);
     }
 
-    await this.mailSendService.sendMail({
-      from: 'Jander Nery <jander.webmaster@gmail.com>',
-      to: input.to,
-      subject: `Vaga - ${input.vacancy} - Jander da Costa Nery`,
-      cc: 'Jander Nery <jander.webmaster@gmail.com>',
-      html: updatedContent,
-      attachments: [
-        {
-          filename: 'curriculo.pdf',
-          path: path.join('src', 'assets', 'curriculo', 'curriculo.pdf'),
-        },
-      ],
-    });
+    // const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const previewFile = `./src/assets/email_preview.html`;
+
+    try {
+      await fs.writeFile(previewFile, updatedContent);
+      console.log(`Template salvo em: ${previewFile}`);
+
+      console.log('Por favor, verifique o arquivo antes de continuar');
+    } catch (error) {
+      console.error('Erro ao salvar o preview:', error);
+    }
+
+    try {
+      await this.mailSendService.sendMail({
+        from: 'Jander Nery <jander.webmaster@gmail.com>',
+        to: input.to,
+        subject: `Vaga - ${input.vacancy} - Jander da Costa Nery`,
+        cc: 'Jander Nery <jander.webmaster@gmail.com>',
+        html: updatedContent,
+        attachments: [
+          {
+            filename: 'curriculo.pdf',
+            path: path.join('src', 'assets', 'curriculo', 'curriculo.pdf'),
+          },
+        ],
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
