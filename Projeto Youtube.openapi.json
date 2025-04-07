@@ -1,0 +1,85 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Projeto Youtube",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/mail": {
+      "post": {
+        "summary": "Send Mail",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "to": "jander.webmaster@gmail.com",
+                "company": "Se Liga Dev",
+                "vacancy": "Desenvolvedor Node Sr",
+                "nameRecruiter": "Jander Nery",
+                "skills": "NodeJs, Java, Spring Boot, ReactJS, NestJS",
+                "specialty": "Desenvolvedor de Software",
+                "githubAvatar": "https://github.com/jnerydesigner.png",
+                "nameFull": "Jander da Costa Nery"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Hello",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {}
+  },
+  "servers": [],
+  "security": []
+}
