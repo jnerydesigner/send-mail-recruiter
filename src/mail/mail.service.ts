@@ -1,12 +1,19 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { MailRequest, Replacement } from './mail.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MailService {
-  constructor(private readonly mailSendService: MailerService) {}
+  private logger: Logger;
+  constructor(
+    private readonly mailSendService: MailerService,
+    private readonly config: ConfigService,
+  ) {
+    this.logger = new Logger(MailService.name);
+  }
   async loadCurriculo() {
     const pathToCurriculo = path.join(
       'src',
@@ -18,7 +25,7 @@ export class MailService {
       const curriculo = await fs.readFile(pathToCurriculo, 'utf8');
       return curriculo;
     } catch (e) {
-      console.log(e);
+      this.logger.error(e);
     }
   }
 
@@ -34,7 +41,7 @@ export class MailService {
       const template = await fs.readFile(pathToTemplate, 'utf8');
       return template;
     } catch (e) {
-      console.log(e);
+      this.logger.error(e);
     }
   }
   saudation() {
@@ -72,9 +79,9 @@ export class MailService {
       ['specialty', input.specialty],
       ['saudation', this.saudation()],
     ];
-    console.log(replacements);
+    this.logger.log(replacements);
     const emailContent = await this.loadTemplate('mail-recruiter');
-    console.log(input.skills);
+    this.logger.log(input.skills);
 
     let updatedContent = emailContent;
 
@@ -88,19 +95,19 @@ export class MailService {
 
     try {
       await fs.writeFile(previewFile, updatedContent);
-      console.log(`Template salvo em: ${previewFile}`);
+      this.logger.log(`Template salvo em: ${previewFile}`);
 
-      console.log('Por favor, verifique o arquivo antes de continuar');
+      this.logger.log('Por favor, verifique o arquivo antes de continuar');
     } catch (error) {
-      console.error('Erro ao salvar o preview:', error);
+      this.logger.error('Erro ao salvar o preview:', error);
     }
 
     try {
       await this.mailSendService.sendMail({
-        from: 'Jander Nery <jander.webmaster@gmail.com>',
+        from: `${this.config.get('SENDER_NAME')} <${this.config.get('SENDER_MAIL')}>`,
         to: input.to,
-        subject: `Vaga - ${input.vacancy} - Jander da Costa Nery`,
-        cc: 'Jander Nery <jander.webmaster@gmail.com>',
+        subject: `Vaga - ${input.vacancy} - ${input.nameFull}`,
+        cc: `${this.config.get('SENDER_NAME')} <${this.config.get('SENDER_MAIL')}>`,
         html: updatedContent,
         attachments: [
           {
@@ -110,7 +117,7 @@ export class MailService {
         ],
       });
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
     }
   }
 }
