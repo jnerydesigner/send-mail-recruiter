@@ -9,6 +9,7 @@ export type Replacement = [
     | 'githubAvatar'
     | 'nameFull'
     | 'specialty'
+    | 'availability'
   ),
   string,
 ][];
@@ -22,4 +23,6 @@ export type MailRequest = {
   specialty: string;
   githubAvatar: string;
   nameFull: string;
+  pretention: string;
+  availability: boolean;
 };

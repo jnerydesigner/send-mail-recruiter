@@ -68,17 +68,43 @@ export class MailService {
       .replace(/,(\S)/g, ', $1')
       .trim();
 
-    const replacements: Replacement = [
-      ['user', 'Jander Nery'],
-      ['company', input.company],
-      ['recruiter', input.nameRecruiter],
-      ['vacancy', input.vacancy],
-      ['habilities', skills],
-      ['githubAvatar', input.githubAvatar],
-      ['nameFull', input.nameFull],
-      ['specialty', input.specialty],
-      ['saudation', this.saudation()],
-    ];
+    let replacements: Replacement;
+    if (input.availability) {
+      const strAvailability = ` <p style="line-height: 180%">
+                                  * Pretensão salárial: ${input.pretention}
+                                </p>
+
+                                <p style="line-height: 180%">
+                                  * Disponibilidade para inicio imediato
+                                </p>`;
+      replacements = [
+        ['user', 'Jander Nery'],
+        ['company', input.company],
+        ['recruiter', input.nameRecruiter],
+        ['vacancy', input.vacancy],
+        ['habilities', skills],
+        ['githubAvatar', input.githubAvatar],
+        ['nameFull', input.nameFull],
+        ['specialty', input.specialty],
+        ['saudation', this.saudation()],
+        ['availability', strAvailability],
+      ];
+    } else {
+      const strAvailability = '';
+      replacements = [
+        ['user', 'Jander Nery'],
+        ['company', input.company],
+        ['recruiter', input.nameRecruiter],
+        ['vacancy', input.vacancy],
+        ['habilities', skills],
+        ['githubAvatar', input.githubAvatar],
+        ['nameFull', input.nameFull],
+        ['specialty', input.specialty],
+        ['saudation', this.saudation()],
+        ['availability', strAvailability],
+      ];
+    }
+
     this.logger.log(replacements);
     const emailContent = await this.loadTemplate('mail-recruiter');
     this.logger.log(input.skills);
