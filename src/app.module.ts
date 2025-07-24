@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailModule } from './mail/mail.module';
 import { env } from './env';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { env } from './env';
       },
     }),
     MailModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -10,6 +10,7 @@ export type Replacement = [
     | 'nameFull'
     | 'specialty'
     | 'availability'
+    | 'curriculo'
   ),
   string,
 ][];
@@ -25,4 +26,5 @@ export type MailRequest = {
   nameFull: string;
   pretention: string;
   availability: boolean;
+  curriculo: string;
 };

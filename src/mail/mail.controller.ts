@@ -16,4 +16,9 @@ export class MailController {
       data: send,
     });
   }
+
+  @Post('base64')
+  async createBase64() {
+    return this.mailService.generateDownloadUrl();
+  }
 }
