@@ -29,7 +29,8 @@ export class MailService {
       'curriculo.pdf',
     );
     try {
-      const curriculo = await fs.readFile(pathToCurriculo, 'utf8');
+      const curriculo = await fs.readFile(pathToCurriculo, null);
+
       return curriculo;
     } catch (e) {
       this.logger.error(e);
@@ -37,7 +38,7 @@ export class MailService {
   }
 
   async loadTemplate(templateName: string) {
-    await this.loadCurriculo();
+    await fs.mkdir('src/assets', { recursive: true });
     const pathToTemplate = path.join(
       'src',
       'assets',
@@ -70,55 +71,29 @@ export class MailService {
   }
 
   async sendMail(input: MailRequest) {
-    const linkCurriculo = await this.uploadService.generatePresignedUrl();
     const skills = input.skills
       .trim()
       .replace(/,$/, '')
       .replace(/,(\S)/g, ', $1')
       .trim();
 
-    let replacements: Replacement;
-    if (input.availability) {
-      const strAvailability = ` <p style="line-height: 180%">
-                                  * Pretensão salárial: ${input.pretention}
-                                </p>
-
-                                <p style="line-height: 180%">
-                                  * Disponibilidade para inicio imediato
-                                </p>`;
-      replacements = [
-        ['user', 'Jander Nery'],
-        ['company', input.company],
-        ['recruiter', input.nameRecruiter],
-        ['vacancy', input.vacancy],
-        ['habilities', skills],
-        ['githubAvatar', input.githubAvatar],
-        ['nameFull', input.nameFull],
-        ['specialty', input.specialty],
-        ['saudation', this.saudation()],
-        ['availability', strAvailability],
-        ['curriculo', linkCurriculo],
-      ];
-    } else {
-      const strAvailability = '';
-      replacements = [
-        ['user', 'Jander Nery'],
-        ['company', input.company],
-        ['recruiter', input.nameRecruiter],
-        ['vacancy', input.vacancy],
-        ['habilities', skills],
-        ['githubAvatar', input.githubAvatar],
-        ['nameFull', input.nameFull],
-        ['specialty', input.specialty],
-        ['saudation', this.saudation()],
-        ['availability', strAvailability],
-        [
-          'curriculo',
-          process.env.URL_CURRICULO ||
-            'https://seliga-dev.s3.us-east-1.amazonaws.com/curriculo-jander-da-costa-nery-2025.pdf',
-        ],
-      ];
-    }
+    const replacements: Replacement = [
+      ['user', 'Jander Nery'],
+      ['company', input.company],
+      ['recruiter', input.nameRecruiter],
+      ['vacancy', input.vacancy],
+      ['habilities', skills],
+      ['githubAvatar', input.githubAvatar],
+      ['nameFull', input.nameFull],
+      ['specialty', input.specialty],
+      ['saudation', this.saudation()],
+      ['availability', input.availability],
+      [
+        'curriculo',
+        process.env.URL_CURRICULO ||
+          'https://seliga-dev.s3.us-east-1.amazonaws.com/curriculo-jander-da-costa-nery-2025.pdf',
+      ],
+    ];
 
     this.logger.log(replacements);
     const emailContent = await this.loadTemplate('mail-recruiter');
@@ -135,6 +110,7 @@ export class MailService {
     const previewFile = `./src/assets/email_preview.html`;
 
     try {
+      await fs.mkdir('src/assets', { recursive: true });
       await fs.writeFile(previewFile, updatedContent);
       this.logger.log(`Template salvo em: ${previewFile}`);
 
