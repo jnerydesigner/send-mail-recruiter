@@ -51,6 +51,7 @@ export class MailService {
       this.logger.error(e);
     }
   }
+
   saudation() {
     const now = new Date();
     const hour = now.getHours();
@@ -114,7 +115,7 @@ export class MailService {
         [
           'curriculo',
           process.env.URL_CURRICULO ||
-            'https://seliga-dev.s3.us-east-1.amazonaws.com/007+-+Curriculo+Jander+da+Costa+Nery+-+2025.pdf',
+            'https://seliga-dev.s3.us-east-1.amazonaws.com/curriculo-jander-da-costa-nery-2025.pdf',
         ],
       ];
     }
