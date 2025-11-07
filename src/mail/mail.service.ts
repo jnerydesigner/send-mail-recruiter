@@ -96,7 +96,7 @@ export class MailService {
     ];
 
     this.logger.log(replacements);
-    const emailContent = await this.loadTemplate('mail-recruiter');
+    const emailContent = await this.loadTemplate('mail-recruiter-v2');
     this.logger.log(input.skills);
 
     let updatedContent = emailContent;
