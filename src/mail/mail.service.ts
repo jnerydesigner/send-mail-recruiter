@@ -119,13 +119,35 @@ export class MailService {
       this.logger.error('Erro ao salvar o preview:', error);
     }
 
+    await this.sendEmailMessage(input, updatedContent);
+  }
+
+  private async sendEmailMessage(
+    input: MailRequest,
+    htmlContent: string,
+  ): Promise<void> {
+    const shouldSendEmail =
+      this.config.get('SEND_MAIL') === 'true' ||
+      this.config.get('SEND_MAIL') === true;
+
+    if (!shouldSendEmail) {
+      this.logger.warn(
+        'Envio de email desabilitado. Configure SEND_MAIL=true para enviar emails.',
+      );
+      this.logger.log('Detalhes do email que seria enviado:');
+      this.logger.log(`- Para: ${input.to}`);
+      this.logger.log(`- Assunto: Vaga - ${input.vacancy} - ${input.nameFull}`);
+      return;
+    }
+
     try {
+      this.logger.log(`Enviando email para: ${input.to}`);
       await this.mailSendService.sendMail({
         from: `${this.config.get('SENDER_NAME')} <${this.config.get('SENDER_MAIL')}>`,
         to: input.to,
         subject: `Vaga - ${input.vacancy} - ${input.nameFull}`,
         cc: `${this.config.get('SENDER_NAME')} <${this.config.get('SENDER_MAIL')}>`,
-        html: updatedContent,
+        html: htmlContent,
         attachments: [
           {
             filename: 'curriculo.pdf',
@@ -138,8 +160,10 @@ export class MailService {
           },
         ],
       });
+      this.logger.log(`Email enviado com sucesso para: ${input.to}`);
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error('Erro ao enviar email:', error);
+      throw error;
     }
   }
 
