@@ -6,6 +6,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { MailModule } from './mail/mail.module';
 import { env } from './env';
 import { UploadModule } from './upload/upload.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -25,8 +26,9 @@ import { UploadModule } from './upload/upload.module';
     }),
     MailModule,
     UploadModule,
+    DatabaseModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
