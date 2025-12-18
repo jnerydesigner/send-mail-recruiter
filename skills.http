@@ -1,0 +1,25 @@
+### Create Skill
+POST http://localhost:5544/skills
+Content-Type: application/json
+
+{
+  "name": "Node.js"
+}
+
+### Find All Skills
+GET http://localhost:5544/skills
+
+### Find One Skill
+# Replace :id with a valid ID
+GET http://localhost:5544/skills/cmjbp2pw60000tz82y8i0aanm
+
+### Update Skill
+PATCH http://localhost:5544/skills/cm50u8x4e000008l35z454z4z
+Content-Type: application/json
+
+{
+  "name": "Node.js (Advanced)"
+}
+
+### Remove Skill
+DELETE http://localhost:5544/skills/cm50u8x4e000008l35z454z4z

@@ -16,3 +16,16 @@ Content-Type: application/json
     "availability": "Estou disponível para iniciar imediatamente e fico à disposição para entrevistas técnicas ou práticas."
 }
 
+###
+POST http://localhost:5544/mail/db
+Content-Type: application/json
+
+{
+    
+    "to": "vagas@conecthus.org.br",
+    "mail": "jander.webmaster@gmail.com",
+    "company": "Conecthus",
+    "vacancy": "Desenvolvedor Full Stack SR",
+    "nameRecruiter": "Luciana Almeida"
+}
+

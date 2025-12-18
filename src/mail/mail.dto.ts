@@ -24,7 +24,8 @@ export type MailRequest = {
   specialty: string;
   githubAvatar: string;
   nameFull: string;
-  pretention: string;
+  pretention?: string;
   availability: string;
   curriculo: string;
+  template?: string;
 };

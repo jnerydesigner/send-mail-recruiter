@@ -7,11 +7,14 @@ import { MailModule } from './mail/mail.module';
 import { env } from './env';
 import { UploadModule } from './upload/upload.module';
 import { DatabaseModule } from './database/database.module';
+import { UsersModule } from './users/users.module';
+import { SkillsModule } from './skills/skills.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '.env',
     }),
     MailerModule.forRoot({
       transport: {
@@ -26,7 +29,9 @@ import { DatabaseModule } from './database/database.module';
     }),
     MailModule,
     UploadModule,
-    DatabaseModule
+    DatabaseModule,
+    UsersModule,
+    SkillsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

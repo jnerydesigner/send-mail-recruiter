@@ -6,6 +6,7 @@ import { MailRequest, Replacement } from './mail.dto';
 import { ConfigService } from '@nestjs/config';
 import * as fsNew from 'fs';
 import { UploadService } from 'src/upload/upload.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class MailService {
@@ -16,6 +17,7 @@ export class MailService {
     private readonly mailSendService: MailerService,
     private readonly config: ConfigService,
     private readonly uploadService: UploadService,
+    private readonly userService: UsersService,
   ) {
     this.logger = new Logger(MailService.name);
     this.fileNameCurriculo = config.get('FILE_NAME_CURRICULO');
@@ -70,12 +72,109 @@ export class MailService {
     return saudation;
   }
 
+  async sendMailForDB(input: { to: string, mail: string, company: string, vacancy: string, nameRecruiter: string }) {
+    const availability = "Estou disponível para iniciar imediatamente e fico à disposição para entrevistas técnicas ou práticas."
+    const user = await this.userService.findOneMail(input.mail);
+
+    const skillsUser = this.formatSkills(user.skills)
+
+    const replacements: Replacement = [
+      ['user', 'Jander Nery'],
+      ['company', input.company],
+      ['recruiter', input.nameRecruiter],
+      ['vacancy', input.vacancy],
+      ['habilities', skillsUser],
+      ['githubAvatar', user.githubAvatar],
+      ['nameFull', user.name],
+      ['specialty', user.specialty],
+      ['saudation', this.saudation()],
+      ['availability', availability],
+      [
+        'curriculo',
+        process.env.URL_CURRICULO ||
+        'https://seliga-dev.s3.us-east-1.amazonaws.com/curriculo-jander-da-costa-nery-2025.pdf',
+      ],
+    ];
+
+    this.logger.log(replacements);
+    const emailContent = await this.loadTemplate('mail-recruiter-v3');
+
+    let updatedContent = emailContent;
+
+    for (const [key, value] of replacements) {
+      const regex = new RegExp(`{{${key}}}`, 'g');
+      updatedContent = updatedContent.replace(regex, value);
+    }
+
+    // const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const previewFile = `./src/assets/email_preview.html`;
+
+    let templateSaved;
+
+
+
+    try {
+      await fs.mkdir('src/assets', { recursive: true });
+      await fs.writeFile(previewFile, updatedContent);
+      this.logger.log(`Template salvo em: ${previewFile}`);
+
+      this.logger.log('Por favor, verifique o arquivo antes de continuar');
+
+      const pathToTemplate = path.join(
+        'src',
+        'assets',
+        `email_preview.html`,
+      );
+
+      templateSaved = await fs.readFile(pathToTemplate, 'utf8');
+    } catch (error) {
+      this.logger.error('Erro ao salvar o preview:', error);
+    }
+
+    let inputMail: MailRequest = {
+      to: input.to,
+      company: input.company,
+      vacancy: input.vacancy,
+      nameRecruiter: input.nameRecruiter,
+      skills: skillsUser,
+      githubAvatar: user.githubAvatar,
+      nameFull: user.name,
+      specialty: user.specialty,
+      availability: availability,
+      curriculo: process.env.URL_CURRICULO ||
+        'https://seliga-dev.s3.us-east-1.amazonaws.com/curriculo-jander-da-costa-nery-2025.pdf',
+    };
+
+    inputMail.template = templateSaved;
+
+    const send = this.sendEmailMessage(inputMail, updatedContent);
+
+
+    this.userService.sendmailUser(inputMail, user);
+
+    return send;
+  }
+
+  private formatSkills(skills: string[]): string {
+    return skills.join(', ');
+  }
+
   async sendMail(input: MailRequest) {
     const skills = input.skills
       .trim()
       .replace(/,$/, '')
       .replace(/,(\S)/g, ', $1')
       .trim();
+
+    const idUser = "cmjbqcid5001oxe82c2gefg8n";
+
+    const user = await this.userService.findOne(idUser);
+
+    const skillsUser = this.formatSkills(user.skills)
+
+    console.log(skillsUser)
+
+    console.log(user)
 
     const replacements: Replacement = [
       ['user', 'Jander Nery'],
@@ -91,7 +190,7 @@ export class MailService {
       [
         'curriculo',
         process.env.URL_CURRICULO ||
-          'https://seliga-dev.s3.us-east-1.amazonaws.com/curriculo-jander-da-costa-nery-2025.pdf',
+        'https://seliga-dev.s3.us-east-1.amazonaws.com/curriculo-jander-da-costa-nery-2025.pdf',
       ],
     ];
 

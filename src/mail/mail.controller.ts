@@ -5,11 +5,21 @@ import { MailRequest } from './mail.dto';
 
 @Controller('mail')
 export class MailController {
-  constructor(private readonly mailService: MailService) {}
+  constructor(private readonly mailService: MailService) { }
 
   @Post()
   async sendMail(@Res() response: Response, @Body() body: MailRequest) {
     const send = this.mailService.sendMail(body);
+
+    return response.status(200).json({
+      message: 'Mail sent successfully',
+      data: send,
+    });
+  }
+
+  @Post('db')
+  async sendMailForDB(@Res() response: Response, @Body() body: { to: string, mail: string, company: string, vacancy: string, nameRecruiter: string }) {
+    const send = this.mailService.sendMailForDB(body);
 
     return response.status(200).json({
       message: 'Mail sent successfully',

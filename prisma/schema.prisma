@@ -1,0 +1,55 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  name         String
+  curriculoUrl String         @map("curriculo_url")
+  specialty    String
+  githubAvatar String         @map("github_avatar")
+  sendmailUser SendMailUser[]
+  skills       UserSkills[]
+
+  @@map("users")
+}
+
+model Skills {
+  id    String       @id @default(cuid())
+  name  String
+  users UserSkills[]
+
+  @@map("skills")
+}
+
+model UserSkills {
+  id      String @id @default(cuid())
+  userId  String @map("user_id")
+  skillId String @map("skill_id")
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill   Skills @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId])
+  @@map("user_skills")
+}
+
+model SendMailUser {
+  id            String   @id @default(cuid())
+  to            String   @unique
+  nameRecruiter String   @map("name_recruiter")
+  company       String   @map("company")
+  vacancy       String   @map("vacancy")
+  userId        String?
+  template      String   @map("template")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  user          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("send_mail_users")
+}

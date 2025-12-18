@@ -61,3 +61,5 @@ src/database/prisma/generated/
 # Database
 *.db
 *.db-journal
+
+/generated/prisma

@@ -1,0 +1,47 @@
+### Create User
+POST http://localhost:5544/users
+Content-Type: application/json
+
+{
+  "email": "jander@example.com",
+  "name": "Jander Nery",
+  "curriculoUrl": "https://linkedin.com/in/jandernery",
+  "specialty": "Full Stack Developer",
+  "githubAvatar": "https://github.com/jnerydesigner.png"
+}
+
+### Find All Users
+GET http://localhost:5544/users
+
+### Find One User
+# Replace :id with a valid ID from the Find All response
+GET http://localhost:5544/users/cmjbqcid5001oxe82c2gefg8n
+
+### Update User
+PATCH http://localhost:5544/users/cmj90d2mt0000z182wsmcu8dk
+Content-Type: application/json
+
+{
+  "email": "jander.webmaster@gmail.com"
+}
+
+### Update User
+PATCH http://localhost:5544/users/cmj90d2mt0000z182wsmcu8dk
+Content-Type: application/json
+
+{
+  "name": "Jander da Costa Nery"
+}
+
+### Update Add Skill
+PATCH http://localhost:5544/users/cmjbp149v000aqk82j2k1k5vi/cmjbp149r0000qk82aebnx7h9
+Content-Type: application/json
+
+### Remove User
+DELETE http://localhost:5544/users/cm50u8x4e000008l35z454z4z
+
+
+### Find One User
+# Replace :id with a valid ID from the Find All response
+GET http://localhost:5544/users/mail/all
+Content-Type: application/json
