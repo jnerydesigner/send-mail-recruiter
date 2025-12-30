@@ -38,7 +38,7 @@
     "express": "^5.1.0",
     "mjml": "^4.15.3",
     "multer": "^2.0.2",
-    "nodemailer": "^7.0.7",
+    "nodemailer": "^7.0.11",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "zod": "^3.23.8"
