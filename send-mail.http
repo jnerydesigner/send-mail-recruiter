@@ -4,11 +4,11 @@ Content-Type: application/json
 
 {
     
-    "to": "vagas@conecthus.org.br",
-    "company": "Conecthus",
-    "vacancy": "Desenvolvedor Full Stack SR",
-    "nameRecruiter": "Luciana Almeida",
-    "skills": "Java, Spring Boot, JavaScript, TypeScript, React, TailwindCSS, Node.js, NestJS, Express, PHP, Python, APIs REST, SOLID, Clean Code, Git, Docker, CI/CD, arquitetura limpa, microserviços, RabbitMQ, Kafka, Bancos SQL e NoSQL, Jenkins, JUnit e Mockito, infraestrutura em nuvem (AWS), versionamento, boas práticas de código e colaboração em equipe",
+    "to": "rh@tarkuss.com.br",
+    "company": "Tarkuss",
+    "vacancy": "Desenvolvedor Fullstack",
+    "nameRecruiter": "RH da Tarkuss",
+    "skills": "JavaScript, TypeScript, React, NextJSTailwindCSS, Node.js, NestJS, Express, APIs REST, SOLID, Clean Code, Git, Docker, CI/CD, arquitetura limpa, microserviços, RabbitMQ, Kafka, Bancos SQL e NoSQL, Jenkins, Java, Spring Boot, JUnit e Mockito, infraestrutura em nuvem (AWS), versionamento, boas práticas de código e colaboração em equipe",
     "specialty":"Desenvolvedor Fullstack",
     "githubAvatar": "https://github.com/jnerydesigner.png",
     "nameFull": "Jander da Costa Nery",
